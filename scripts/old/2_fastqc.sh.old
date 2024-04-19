@@ -1,0 +1,13 @@
+#!/bin/bash
+
+dirs=$(ls ../isolates/)
+
+for i in $dirs
+do
+	dir_i="../isolates/$i"
+	echo $dir_i
+	fastq=$(ls $dir_i/*.fastq.gz)
+	echo $fastq
+	# https://github.com/s-andrews/FastQC/issues/86
+	fastqc "$fastq" -o "$(dirname "$fastq")" -t 12
+done

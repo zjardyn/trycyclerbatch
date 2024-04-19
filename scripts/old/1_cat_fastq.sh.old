@@ -1,0 +1,31 @@
+#!/bin/bash
+
+#
+# This script takes a directory path of samples as 
+# input and concatenates the fastq reads within each 
+# sample into a named fastq based on the sample name.
+#
+# It assumes that each sample directory has subdirectories 
+# which contain the fastq files.
+#
+
+if [ $# -eq 0 ]; then
+    echo "Usage: $0 <directory path to samples>"
+    exit 1
+fi
+
+dir="$1"
+samples=$(ls $dir)
+
+for sample in $samples
+do
+	# sed is used to strip literal "/" from path so that 
+	# a user can either enter path/ or path 
+	sample_path=$(echo "$dir" | sed 's/\/$//')/"$sample"/
+	fastq_files=$(ls "$sample_path"*/*.fastq.gz)
+	catfastq="$sample_path""$sample"'_reads.fastq.gz'
+
+	#echo $fastq_files
+	echo 'Concatenating fastq files from sample: '"$sample"
+	cat $fastq_files > "$catfastq"
+done
